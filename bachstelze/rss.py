@@ -22,24 +22,23 @@
 
 # standard library imports
 import os
-import json
 
 # third party imports
 import bs4
 import feedparser
 
 # library specific imports
-import config
+import bachstelze.config
 
 
 def _import_rss_feeds():
-    """Import RSS feeds from JSON file.
+    """Import RSS feeds from file.
 
     :returns: RSS feeds
     :rtype: list
     """
-    with config.RSS_FEEDS_PATH.open() as fp:
-        return [item["location"] for item in json.load(fp)]
+    with bachstelze.config.RSS_FEEDS_PATH.open() as fp:
+        return [line.strip() for line in fp.readlines()]
 
 
 def parse_rss_feeds():

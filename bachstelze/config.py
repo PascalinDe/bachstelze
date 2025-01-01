@@ -33,7 +33,7 @@ _SHARE_PATH = _HOME_PATH / ".local" / "share"
 _CONFIG_PATH = _HOME_PATH / ".config" / "bachstelze"
 DATABASE_PATH = _SHARE_PATH / "bachstelze.db"
 FLAT_FILE_DIR = _SHARE_PATH / "bachstelze"
-RSS_FEEDS_PATH = _CONFIG_PATH / "rss_feeds.json"
+RSS_FEEDS_PATH = _CONFIG_PATH / "rss_feeds.txt"
 
 
 _CONFIG_PATH.mkdir(exist_ok=True)
