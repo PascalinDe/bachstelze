@@ -1,5 +1,5 @@
 #    This file is part of Bachstelze.
-#    Copyright (C) 2024  Carine Dengler
+#    Copyright (C) 2025  Carine Dengler
 #
 #    Bachstelze is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,23 +16,19 @@
 
 
 """
-:synopsis: Configuration management.
+:synopsis: Test cases configuration management.
 """
 
 
 # standard library imports
-import os
 import pathlib
 
 # third party imports
 # library specific imports
 
 
-_HOME_PATH = pathlib.Path(os.environ["HOME"])
+_HOME_PATH = pathlib.Path("tests") / "data"
 _SHARE_PATH = _HOME_PATH / ".local" / "share"
 _CONFIG_PATH = _HOME_PATH / ".config" / "bachstelze"
 DATABASE_PATH = _SHARE_PATH / "bachstelze.json"
 RSS_FEEDS_PATH = _CONFIG_PATH / "rss_feeds.txt"
-
-
-_CONFIG_PATH.mkdir(exist_ok=True)

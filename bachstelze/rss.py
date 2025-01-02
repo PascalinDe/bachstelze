@@ -21,48 +21,63 @@
 
 
 # standard library imports
-import os
-
 # third party imports
-import bs4
+import tinydb
 import feedparser
 
 # library specific imports
 import bachstelze.config
 
 
-def _import_rss_feeds():
-    """Import RSS feeds from file.
+def insert_rss_feed(db, feed):
+    """Insert RSS feed entries.
 
-    :returns: RSS feeds
+    :param tinydb.database.TinyDB db: connection to TinyDB database
+    :param feedparser.util.FeedParserDict feed: RSS feed
+    """
+    entries = feed.pop("entries")
+    for entry in entries:
+        doc_id = hash(entry.pop("id"))
+        entry["feed"] = feed
+        db.upsert(tinydb.table.Document(entry, doc_id=doc_id))
+
+
+def get_rss_feed(db, location):
+    """Get RSS feed entries.
+
+    :param tinydb.database.TinyDB db: connection to TinyDB database
+    :param str location: RSS feed URL
+
+    :returns: RSS feed entries
+    :rtype: list
+    """
+    entries = db.search(tinydb.Query().feed.location == location)
+    if not entries:
+        return []
+    for entry in entries:
+        feed = entry.pop("feed", None)
+    feed["entries"] = entries
+    return feedparser.util.FeedParserDict(feed)
+
+
+def import_rss_feeds():
+    """Import RSS feed locations from file.
+
+    :returns: RSS feed locations
     :rtype: list
     """
     with bachstelze.config.RSS_FEEDS_PATH.open() as fp:
         return [line.strip() for line in fp.readlines()]
 
 
-def parse_rss_feeds():
-    """Parse RSS feeds.
+def parse_rss_feed(location):
+    """Parse RSS feed.
 
-    :returns: feed
+    :param str location: RSS feed location
+
+    :returns: feed with additional 'location' field
     :rtype: feedparser.util.FeedParserDict
     """
-    for location in _import_rss_feeds():
-        yield feedparser.parse(location)
-
-
-def pprint_feed(feed):
-    """Pretty-print RSS feed.
-
-    :param feedparser.util.FeedParserDict feed: RSS feed
-
-    :returns: pretty-printed RSS feed
-    :rtype: str
-    """
-    for entry in feed["entries"]:
-        yield os.linesep.join(
-            (
-                entry["title"],
-                bs4.BeautifulSoup(entry["summary"], "html.parser").text,
-            )
-        )
+    feed = feedparser.parse(location)
+    feed["location"] = location
+    return feed

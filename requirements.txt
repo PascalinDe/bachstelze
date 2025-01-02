@@ -3,3 +3,4 @@ feedparser
 networkx
 rdflib
 spacy
+tinydb
